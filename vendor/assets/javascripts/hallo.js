@@ -2798,11 +2798,11 @@
         var buttonEl, classes, id;
         id = "" + this.options.uuid + "-" + this.options.label;
         classes = ['ui-button', 'ui-widget', 'ui-state-default', 'ui-corner-all', 'ui-button-text-only'];
-        buttonEl = jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + this.options.label + "\">         <i class=\"" + this.options.icon + "\"></i>       </button>");
+        buttonEl = jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + this.options.label + "\">         <span class=\"ui-button-text\"> <i class=\"" + this.options.icon + "\"></i> </span>       </button>");
         if (this.options.cssClass) {
           buttonEl.addClass(this.options.cssClass);
         }
-        return buttonEl.button();
+        return buttonEl;
       }
     });
   })(jQuery);

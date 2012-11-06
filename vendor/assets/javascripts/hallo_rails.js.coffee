@@ -9,6 +9,7 @@ default_plugins =
   hallolink: {}
   halloreundo: {}
   hallohtml: {}
+  'hallo-image-insert-edit': {}
 
 init = ->
   $('.editable, .form_editable').each ->

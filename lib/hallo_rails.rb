@@ -20,7 +20,7 @@ module HalloRails
       object_name = object.class.to_s.underscore
       options.reverse_merge! tag: :div,
                              content: object.send(method).try(:html_safe),
-                             update_url: "#{object_name.pluralize}/#{object.to_param}",
+                             update_url: "/#{object_name.pluralize}/#{object.to_param}",
                              blank_text: "<i>Click to Edit</i>".html_safe
 
       content_tag options[:tag], options[:content].present? ? options[:content] : options[:blank_text],

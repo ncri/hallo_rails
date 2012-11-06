@@ -19,32 +19,32 @@ init = ->
     $.extend options, { plugins: plugins }
     $el.hallo options
 
-    $('body').on "hallodeactivated", '.editable', ->
-      $el = $(this)
+  $('body').on "hallodeactivated", '.editable', ->
+    $el = $(this)
 
-      data = {}
-      method_data = {}
-      method_data[$el.data('method')] = $el.html()
-      data[ $el.data('model') ] = method_data
-      for property_name of $el.data()
-        if typeof $el.data(property_name) == 'string' and property_name != 'method' and
-         property_name != 'model' and property_name != 'updateUrl'
-          data[property_name] = $el.data(property_name)
+    data = {}
+    method_data = {}
+    method_data[$el.data('method')] = $el.html()
+    data[ $el.data('model') ] = method_data
+    for property_name of $el.data()
+      if typeof $el.data(property_name) == 'string' and property_name != 'method' and
+       property_name != 'model' and property_name != 'updateUrl'
+        data[property_name] = $el.data(property_name)
 
-      $.ajax
-        url: $el.data('update-url')
-        type: 'PUT'
-        data: data
-        beforeSend: ->
-          $el.addClass('hallo_updating')
-        success: ->
-          $el.removeClass('hallo_updating')
+    $.ajax
+      url: $el.data('update-url')
+      type: 'PUT'
+      data: data
+      beforeSend: ->
+        $el.addClass('hallo_updating')
+      success: ->
+        $el.removeClass('hallo_updating')
 
-    $('body').on "hallodeactivated", '.form_editable', ->
-      $el = $(this)
-      hidden_textarea_name = "#{$el.data('model')}[#{$el.data('method')}]"
-      $hidden_textarea = $el.next("textarea[name='#{hidden_textarea_name}']")
-      $hidden_textarea.html $el.html()
+  $('body').on "hallodeactivated", '.form_editable', ->
+    $el = $(this)
+    hidden_textarea_name = "#{$el.data('model')}[#{$el.data('method')}]"
+    $hidden_textarea = $el.next("textarea[name='#{hidden_textarea_name}']")
+    $hidden_textarea.html $el.html()
 
 @HalloRails = { default_options, default_plugins, init }
 

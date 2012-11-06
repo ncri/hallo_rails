@@ -1837,15 +1837,15 @@
           $('#hallo_img_file_select_title').text('');
         }
       }
+      this.options.dialog.bind('dialogclose', function() {
+        var scrollbar_pos;
+        $('label', _this.button).removeClass('ui-state-active');
+        scrollbar_pos = $(document).scrollTop();
+        _this.options.editable.element.focus();
+        $(document).scrollTop(scrollbar_pos);
+        return _this.options.editable.keepActivated(false);
+      });
       if (this.options.insert_file_dialog_ui_url && !this.dialog_image_selection_ui_loaded) {
-        this.options.dialog.bind('dialogclose', function() {
-          var scrollbar_pos;
-          $('label', _this.button).removeClass('ui-state-active');
-          scrollbar_pos = $(document).scrollTop();
-          _this.options.editable.element.focus();
-          $(document).scrollTop(scrollbar_pos);
-          return _this.options.editable.keepActivated(false);
-        });
         this.options.dialog.on('click', ".reload_link", function() {
           widget._load_dialog_image_selection_ui();
           return false;

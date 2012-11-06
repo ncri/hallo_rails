@@ -25,6 +25,10 @@ init = ->
       method_data = {}
       method_data[$el.data('method')] = $el.html()
       data[ $el.data('model') ] = method_data
+      for property_name of $el.data()
+        if typeof $el.data(property_name) == 'string' and property_name != 'method' and
+         property_name != 'model' and property_name != 'updateUrl'
+          data[property_name] = $el.data(property_name)
 
       $.ajax
         url: $el.data('update-url')

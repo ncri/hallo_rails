@@ -2,7 +2,7 @@
   @include border-radius;
   border: 1px solid #AAA;
   padding: 3px;
-  background-color: #EEE;
+  background-color: white;
 }
 
 .dropdown-menu{
@@ -36,19 +36,23 @@
   z-index: 10001 !important;
 }
 
+.editable_wrapper{
+  position: relative;
+}
+
 .editable:hover:before, .hallo_updating:before{
   font-size: 14px;
   color: orange;
   display: block;
   width: 100%;
   height: 100%;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+  z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
-  text-align: center;
-  z-index: 1;
   background-color: white;
   border: 1px dashed orange;
   @include opacity(0.9);

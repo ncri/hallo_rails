@@ -25,7 +25,7 @@ module HalloRails
 
       options[:content] = sanitize(options[:content]) if options[:sanitize]
 
-      content_tag( :div, class: 'editable_wrapper') do
+      content_tag( :div, class: 'editable_wrapper', style: options[:inline] ? 'display:inline-block' : nil ) do
         content_tag options[:tag], options[:content].present? ? options[:content] : options[:blank_text],
                       class: "#{'editable' if !options.has_key?(:editable) or options[:editable]}",
                       id: "#{object_name}_#{method.to_s}",
@@ -44,7 +44,7 @@ module HalloRails
                              content: object.send(method).try(:html_safe),
                              blank_text: "<i>Click to Edit</i>".html_safe
       options[:content] = sanitize(options[:content]) if options[:sanitize]
-      content_tag( :div, class: 'editable_wrapper') do
+      content_tag( :div, class: 'editable_wrapper', style: options[:inline] ? 'display:inline-block' : nil) do
         content_tag( options[:tag], options[:content].present? ? options[:content] : options[:blank_text],
                                       class: 'form_editable',
                                       id: "#{object_name}_#{method.to_s}",

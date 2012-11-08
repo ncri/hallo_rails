@@ -1,0 +1,148 @@
+.hallotoolbar, .dropdown-menu{
+  @include border-radius;
+  border: 1px solid #AAA;
+  padding: 3px;
+  background-color: #EEE;
+}
+
+.dropdown-menu{
+  z-index: 1000;
+}
+
+.blockselector{
+  @include border-radius(3px);
+  background-color: #E6E6E6;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #555;
+
+  &:hover{
+    border: 1px solid #777;
+  }
+}
+
+.hallo_insert_file_loader{
+  margin: 100px auto;
+  width: 32px;
+  height: 32px;
+  background-image: asset-url('ajax_loader/ajax-loader-bold.gif', 'image');
+}
+
+.hallotoolbar{
+  z-index: 10000;
+}
+
+.ui-dialog{
+  z-index: 10001 !important;
+}
+
+.editable:hover:before, .hallo_updating:before{
+  font-size: 14px;
+  color: orange;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: center;
+  z-index: 1;
+  background-color: white;
+  border: 1px dashed orange;
+  @include opacity(0.9);
+  @include border-radius;
+}
+
+.editable:hover:before{
+  content: "Zum Bearbeiten klicken";   /* "Click to edit" Modify to your language */
+}
+
+.hallo_updating:before{
+  content: "Speichern...";             /* "Saving..." Modify to your language */
+}
+
+.editable.inEditMode:hover:before{
+  display: none;
+}
+
+
+/* Hallo-HTML */
+
+.ui-dialog-content{
+
+  textarea.html_source{
+    width: 98%;
+    height: 94%;
+    min-height: 400px;
+  }
+
+  padding: 10px 15px 10px 0 !important;
+
+  #directory_loader, #no_files{
+    padding-top: 60px;
+    margin-top: 0;
+  }
+
+  #folders{
+    width: 200px;
+  }
+
+  #previews{
+    width: 320px;
+  }
+}
+
+
+/* Hallo-Image-Insert-Edit */
+
+
+#hallo_img_properties{
+  margin-left: 10px;
+  width: 99%;
+  margin-bottom: 15px;
+  padding: 5px;
+
+  display: table;
+
+  .hallo_img_property_row{
+    display: table-row;
+
+    .hallo_img_property_col{
+      display: table-cell;
+      padding-right: 7px;
+      padding-bottom: 5px;
+
+      &:first-child{
+        width: 60px;
+      }
+
+      .img_property_entry{
+        padding-right: 7px;
+      }
+    }
+  }
+
+  #hallo_img_source, #hallo_img_alt{
+    width: 99%;
+  }
+
+  #hallo_img_width, #hallo_img_height{
+    width: 40px;
+  }
+
+  #hallo_img_padding{
+    width: 130px;
+  }
+}
+
+#hallo_img_file_select_ui{
+  height: 300px;
+
+  #hallo_img_file_select_title{
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-size: 14px;
+  }
+}

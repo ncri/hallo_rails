@@ -12,10 +12,11 @@ default_plugins =
   'hallo-image-insert-edit': {}
 
 init = ->
+  context = this
   $('.editable, .form_editable').each ->
     $el = $(this)
-    plugins = $el.data('editable-plugins') || default_plugins
-    options = $el.data('editable-options') || default_options
+    plugins = $el.data('editable-plugins') || context.default_plugins
+    options = $el.data('editable-options') || context.default_options
     $.extend options, { plugins: plugins }
     $el.hallo options
 
@@ -26,6 +27,7 @@ init = ->
     method_data = {}
     method_data[$el.data('method')] = $el.html()
     data[ $el.data('model') ] = method_data
+    data.in_place_update = true
     for property_name of $el.data()
       if typeof $el.data(property_name) == 'string' and property_name != 'method' and
        property_name != 'model' and property_name != 'updateUrl'

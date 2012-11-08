@@ -2517,7 +2517,8 @@
             return;
           }
           _this._updatePosition(position, data.selection);
-          return _this.toolbar.show();
+          if (_this.toolbar.html() != '')
+            return _this.toolbar.show();
         });
         this.element.bind('hallounselected', function(event, data) {
           return _this.toolbar.hide();

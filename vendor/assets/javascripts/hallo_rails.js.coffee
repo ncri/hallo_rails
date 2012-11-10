@@ -19,6 +19,8 @@ init = ->
     options = $el.data('editable-options') || context.default_options
     $.extend options, { plugins: plugins }
     $el.hallo options
+    $el.click ->
+      $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
 
   $('body').on "hallodeactivated", '.editable', ->
     $el = $(this)

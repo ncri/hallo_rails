@@ -59,7 +59,7 @@
   content: "Speichern...";             /* "Saving..." Modify to your language */
 }
 
-.editable.inEditMode:hover:before{
+.editable.inEditMode:hover:before{     /* this works in chrome, but not FF */
   display: none;
 }
 

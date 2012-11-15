@@ -1,4 +1,4 @@
-# HalloRails
+# Hallo Rails
 
 Use the Hallo Editor (https://github.com/bergie/hallo) to edit content in place in your Rails app.
 

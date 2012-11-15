@@ -25,7 +25,7 @@ Add this to your sass styles:
 You also need to supply styles for the editor icons. 
 Good Icons are included in http://fortawesome.github.com/Font-Awesome/
 
-Just download it and add the styles and font files to your app.
+Just download it and add the styles and font files to your app and you are good to go.
 
 
 ## Requirements

@@ -1755,35 +1755,33 @@
         dialog_html += "<div id='hallo_img_file_select_ui'></div>";
       }
       this.options.dialog = $("<div>").attr('id', "" + this.options.uuid + "-insert-image-dialog").html(dialog_html);
-      if (this.options.insert_file_dialog_ui_url) {
-        $buttonset = $("<span>").addClass(this.widgetName);
-        $buttonHolder = $('<span>');
-        $buttonHolder.hallobutton({
-          label: this.options.button_label,
-          icon: 'icon-picture',
-          editable: this.options.editable,
-          command: null,
-          queryState: false,
-          uuid: this.options.uuid,
-          cssClass: this.options.buttonCssClass
-        });
-        $buttonset.append($buttonHolder);
-        this.button = $buttonHolder;
-        this.button.click(function() {
-          if (widget.options.dialog.dialog("isOpen")) {
-            widget._closeDialog();
-          } else {
-            widget.lastSelection = widget.options.editable.getSelection();
-            widget._openDialog();
-          }
-          return false;
-        });
-        this.options.editable.element.on("halloselected, hallounselected", function() {
-          if (widget.options.dialog.dialog("isOpen")) {
-            return widget.lastSelection = widget.options.editable.getSelection();
-          }
-        });
-      }
+      $buttonset = $("<span>").addClass(this.widgetName);
+      $buttonHolder = $('<span>');
+      $buttonHolder.hallobutton({
+        label: this.options.button_label,
+        icon: 'icon-picture',
+        editable: this.options.editable,
+        command: null,
+        queryState: false,
+        uuid: this.options.uuid,
+        cssClass: this.options.buttonCssClass
+      });
+      $buttonset.append($buttonHolder);
+      this.button = $buttonHolder;
+      this.button.click(function() {
+        if (widget.options.dialog.dialog("isOpen")) {
+          widget._closeDialog();
+        } else {
+          widget.lastSelection = widget.options.editable.getSelection();
+          widget._openDialog();
+        }
+        return false;
+      });
+      this.options.editable.element.on("halloselected, hallounselected", function() {
+        if (widget.options.dialog.dialog("isOpen")) {
+          return widget.lastSelection = widget.options.editable.getSelection();
+        }
+      });
       this.options.editable.element.on("hallodeactivated", function() {
         return widget._closeDialog();
       });
@@ -1817,14 +1815,14 @@
       this.options.dialog.dialog("open");
       if (this.$image) {
         this.options.dialog.dialog("option", "title", 'Image Properties');
-        this._load_dialog_image_properties_ui();
         $(document).keyup(function(e) {
-          if (e.keyCode === 46) {
+          if (e.keyCode === 46 || e.keyCode === 8) {
             $(document).off();
             widget._closeDialog();
             widget.$image.remove();
-            return widget.$image = null;
+            widget.$image = null;
           }
+          return e.preventDefault();
         });
         this.options.editable.element.on("click", function() {
           widget.$image = null;
@@ -1837,6 +1835,7 @@
           $('#hallo_img_file_select_title').text('');
         }
       }
+      this._load_dialog_image_properties_ui();
       this.options.dialog.bind('dialogclose', function() {
         var scrollbar_pos;
         $('label', _this.button).removeClass('ui-state-active');
@@ -1857,16 +1856,19 @@
             widget.$image.attr('src', new_source);
             $('#hallo_img_source').val(new_source);
           } else {
-            widget.options.editable.restoreSelection(widget.lastSelection);
-            document.execCommand("insertImage", null, $(this).attr('src').replace(/-thumb/, ''));
-            widget.options.editable.element.trigger('change');
-            widget.options.editable.removeAllSelections();
-            widget._closeDialog();
+            widget._insert_image($(this).attr('src').replace(/-thumb/, ''));
           }
           return false;
         });
         return this._load_dialog_image_selection_ui();
       }
+    },
+    _insert_image: function(source) {
+      this.options.editable.restoreSelection(this.lastSelection);
+      document.execCommand("insertImage", null, source);
+      this.options.editable.element.trigger('change');
+      this.options.editable.removeAllSelections();
+      return this._closeDialog();
     },
     _closeDialog: function() {
       return this.options.dialog.dialog("close");
@@ -1891,74 +1893,95 @@
       var $img_properties, html, widget;
       widget = this;
       $img_properties = this.options.dialog.children('#hallo_img_properties');
-      $img_properties.show();
-      html = this._property_input_html('source', this.$image.attr('src'), {
-        label: 'Source'
-      }) + this._property_input_html('alt', this.$image.attr('alt'), {
-        label: 'Alt text'
-      }) + this._property_row_html(this._property_input_html('width', (this.$image.is('[width]') ? this.$image.attr('width') : ''), {
-        label: 'Width',
-        row: false
-      }) + this._property_input_html('height', (this.$image.is('[height]') ? this.$image.attr('height') : ''), {
-        label: 'Height',
-        row: false
-      })) + this._property_input_html('padding', this.$image.css('padding'), {
-        label: 'Padding'
-      }) + this._property_row_html(this._property_cb_html('float_left', this.$image.css('float') === 'left', {
-        label: 'left',
-        row: false
-      }) + this._property_cb_html('float_right', this.$image.css('float') === 'right', {
-        label: 'right',
-        row: false
-      }) + this._property_cb_html('unfloat', this.$image.css('float') === 'none', {
-        label: 'no',
-        row: false
-      }), 'Float');
-      $img_properties.html(html);
-      if ($('#hallo_img_file_select_title').length > 0) {
-        $('#hallo_img_file_select_title').text('Change image:');
+      if (this.$image) {
+        html = this._property_input_html('source', this.$image.attr('src'), {
+          label: 'Source'
+        }) + this._property_input_html('alt', this.$image.attr('alt'), {
+          label: 'Alt text'
+        }) + this._property_row_html(this._property_input_html('width', (this.$image.is('[width]') ? this.$image.attr('width') : ''), {
+          label: 'Width',
+          row: false
+        }) + this._property_input_html('height', (this.$image.is('[height]') ? this.$image.attr('height') : ''), {
+          label: 'Height',
+          row: false
+        })) + this._property_input_html('padding', this.$image.css('padding'), {
+          label: 'Padding'
+        }) + this._property_row_html(this._property_cb_html('float_left', this.$image.css('float') === 'left', {
+          label: 'left',
+          row: false
+        }) + this._property_cb_html('float_right', this.$image.css('float') === 'right', {
+          label: 'right',
+          row: false
+        }) + this._property_cb_html('unfloat', this.$image.css('float') === 'none', {
+          label: 'no',
+          row: false
+        }), 'Float');
+        $img_properties.html(html);
+        $img_properties.show();
+      } else {
+        if (!this.options.insert_file_dialog_ui_url) {
+          $img_properties.html(this._property_input_html('source', '', {
+            label: 'Source'
+          }));
+          $img_properties.show();
+        }
       }
-      $('#hallo_img_properties #hallo_img_source').keyup(function() {
-        return widget.$image.attr('src', this.value);
-      });
-      $('#hallo_img_properties #hallo_img_alt').keyup(function() {
-        return widget.$image.attr('alt', this.value);
-      });
-      $('#hallo_img_properties #hallo_img_padding').keyup(function() {
-        return widget.$image.css('padding', this.value);
-      });
-      $('#hallo_img_properties #hallo_img_height').keyup(function() {
-        widget.$image.css('height', this.value);
-        return widget.$image.attr('height', this.value);
-      });
-      $('#hallo_img_properties #hallo_img_width').keyup(function() {
-        widget.$image.css('width', this.value);
-        return widget.$image.attr('width', this.value);
-      });
-      $('#hallo_img_properties #hallo_img_float_left').click(function() {
-        if (!this.checked) {
-          return false;
+      if (this.$image) {
+        if (!this.options.insert_file_dialog_ui_url) {
+          $('#insert_image_btn').remove();
         }
-        widget.$image.css('float', 'left');
-        $('#hallo_img_properties #hallo_img_float_right').removeAttr('checked');
-        return $('#hallo_img_properties #hallo_img_unfloat').removeAttr('checked');
-      });
-      $('#hallo_img_properties #hallo_img_float_right').click(function() {
-        if (!this.checked) {
-          return false;
+        if ($('#hallo_img_file_select_title').length > 0) {
+          $('#hallo_img_file_select_title').text('Change image:');
         }
-        widget.$image.css('float', 'right');
-        $('#hallo_img_properties #hallo_img_unfloat').removeAttr('checked');
-        return $('#hallo_img_properties #hallo_img_float_left').removeAttr('checked');
-      });
-      return $('#hallo_img_properties #hallo_img_unfloat').click(function() {
-        if (!this.checked) {
-          return false;
+        $('#hallo_img_properties #hallo_img_source').keyup(function() {
+          return widget.$image.attr('src', this.value);
+        });
+        $('#hallo_img_properties #hallo_img_alt').keyup(function() {
+          return widget.$image.attr('alt', this.value);
+        });
+        $('#hallo_img_properties #hallo_img_padding').keyup(function() {
+          return widget.$image.css('padding', this.value);
+        });
+        $('#hallo_img_properties #hallo_img_height').keyup(function() {
+          widget.$image.css('height', this.value);
+          return widget.$image.attr('height', this.value);
+        });
+        $('#hallo_img_properties #hallo_img_width').keyup(function() {
+          widget.$image.css('width', this.value);
+          return widget.$image.attr('width', this.value);
+        });
+        $('#hallo_img_properties #hallo_img_float_left').click(function() {
+          if (!this.checked) {
+            return false;
+          }
+          widget.$image.css('float', 'left');
+          $('#hallo_img_properties #hallo_img_float_right').removeAttr('checked');
+          return $('#hallo_img_properties #hallo_img_unfloat').removeAttr('checked');
+        });
+        $('#hallo_img_properties #hallo_img_float_right').click(function() {
+          if (!this.checked) {
+            return false;
+          }
+          widget.$image.css('float', 'right');
+          $('#hallo_img_properties #hallo_img_unfloat').removeAttr('checked');
+          return $('#hallo_img_properties #hallo_img_float_left').removeAttr('checked');
+        });
+        return $('#hallo_img_properties #hallo_img_unfloat').click(function() {
+          if (!this.checked) {
+            return false;
+          }
+          widget.$image.css('float', 'none');
+          $('#hallo_img_properties #hallo_img_float_right').removeAttr('checked');
+          return $('#hallo_img_properties #hallo_img_float_left').removeAttr('checked');
+        });
+      } else {
+        if (!this.options.insert_file_dialog_ui_url) {
+          $img_properties.after('<button id="insert_image_btn">Insert</button>');
+          return $('#insert_image_btn').click(function() {
+            return widget._insert_image($('#hallo_img_properties #hallo_img_source').val());
+          });
         }
-        widget.$image.css('float', 'none');
-        $('#hallo_img_properties #hallo_img_float_right').removeAttr('checked');
-        return $('#hallo_img_properties #hallo_img_float_left').removeAttr('checked');
-      });
+      }
     },
     _property_col_html: function(col_html) {
       return "<div class='hallo_img_property_col'>" + col_html + "</div>";
@@ -2517,8 +2540,9 @@
             return;
           }
           _this._updatePosition(position, data.selection);
-          if (_this.toolbar.html() != '')
+          if (_this.toolbar.html() !== '') {
             return _this.toolbar.show();
+          }
         });
         this.element.bind('hallounselected', function(event, data) {
           return _this.toolbar.hide();

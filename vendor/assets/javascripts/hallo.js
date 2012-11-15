@@ -859,7 +859,8 @@
       this.options.dialog.children('.html_source').val(html);
       this.options.dialog.prepend($("<button>" + this.texts.update + "</button>"));
       return this.options.dialog.on('click', 'button', function() {
-        widget.options.editable.element.html(widget.options.dialog.children('.html_source').val());
+        html = widget.options.dialog.children('.html_source').val();
+        widget.options.editable.element.html(html);
         widget.options.editable.element.trigger('change');
         return false;
       });
@@ -1655,7 +1656,8 @@
         editableEl = jQuery(this.options.editable.element);
         toolbarEl = jQuery(this.options.toolbar);
         xposition = editableEl.offset().left + editableEl.outerWidth() - 3;
-        yposition = toolbarEl.offset().top - jQuery(document).scrollTop() - 29;
+        yposition = toolbarEl.offset().top + toolbarEl.outerHeight() + 29;
+        yposition -= jQuery(document).scrollTop();
         this.options.dialog.dialog("option", "position", [xposition, yposition]);
         cleanUp();
         widget.options.loaded = 1;
@@ -1774,7 +1776,7 @@
       },
       de: {
         title_insert: 'Bild einfügen',
-        title_properties: 'Bild Eigenschaften',
+        title_properties: 'Bildeigenschaften',
         insert: 'Einfügen',
         chage_image: 'Bild ändern:',
         source: 'URL',
@@ -1836,7 +1838,9 @@
         return false;
       });
       this.options.editable.element.on('halloselected', function(event, data) {
-        if (widget.options.editable.options.toolbar === "halloToolbarContextual" && $(data.originalEvent.target).is('img')) {
+        var toolbar_option;
+        toolbar_option = widget.options.editable.options.toolbar;
+        if (toolbar_option === "halloToolbarContextual" && $(data.originalEvent.target).is('img')) {
           $toolbar.hide();
           return false;
         }
@@ -1925,9 +1929,14 @@
       return $.ajax({
         url: this.options.insert_file_dialog_ui_url,
         success: function(data, textStatus, jqXHR) {
-          var file_select_title;
-          file_select_title = widget.options.dialog.children('#hallo_img_properties').is(':visible') ? widget.texts.change_image : '';
-          widget.options.dialog.children('#hallo_img_file_select_ui').html(("<div id='hallo_img_file_select_title'>" + file_select_title + "</div>") + data);
+          var $properties, file_select_title, t;
+          file_select_title = '';
+          $properties = widget.options.dialog.children('#hallo_img_properties');
+          if ($properties.is(':visible')) {
+            file_select_title = widget.texts.change_image;
+          }
+          t = "<div id='hallo_img_file_select_title'>" + file_select_title + "</div>";
+          widget.options.dialog.children('#hallo_img_file_select_ui').html(t + data);
           return widget.dialog_image_selection_ui_loaded = true;
         },
         beforeSend: function() {
@@ -1936,18 +1945,20 @@
       });
     },
     _load_dialog_image_properties_ui: function() {
-      var $img_properties, html, widget;
+      var $img_properties, button, height, html, widget, width;
       widget = this;
       $img_properties = this.options.dialog.children('#hallo_img_properties');
       if (this.$image) {
+        width = this.$image.is('[width]') ? this.$image.attr('width') : '';
+        height = this.$image.is('[height]') ? this.$image.attr('height') : '';
         html = this._property_input_html('source', this.$image.attr('src'), {
           label: this.texts.source
         }) + this._property_input_html('alt', this.$image.attr('alt') || '', {
           label: this.texts.alt
-        }) + this._property_row_html(this._property_input_html('width', (this.$image.is('[width]') ? this.$image.attr('width') : ''), {
+        }) + this._property_row_html(this._property_input_html('width', width, {
           label: this.texts.width,
           row: false
-        }) + this._property_input_html('height', (this.$image.is('[height]') ? this.$image.attr('height') : ''), {
+        }) + this._property_input_html('height', height, {
           label: this.texts.height,
           row: false
         })) + this._property_input_html('padding', this.$image.css('padding'), {
@@ -2022,9 +2033,12 @@
         });
       } else {
         if (!this.options.insert_file_dialog_ui_url) {
-          $img_properties.after("<button id=\"insert_image_btn\">" + this.texts.insert + "</button>");
+          button = "<button id=\"insert_image_btn\">" + this.texts.insert + "</button>";
+          $img_properties.after(button);
           return $('#insert_image_btn').click(function() {
-            return widget._insert_image($('#hallo_img_properties #hallo_img_source').val());
+            var $img_source;
+            $img_source = $('#hallo_img_properties #hallo_img_source');
+            return widget._insert_image($img_source.val());
           });
         }
       }
@@ -2036,32 +2050,41 @@
       if (label == null) {
         label = '';
       }
-      return "<div class='hallo_img_property_row'>" + (this._property_col_html(label) + this._property_col_html(row_html)) + "</div>";
+      row_html = this._property_col_html(label) + this._property_col_html(row_html);
+      return "<div class='hallo_img_property_row'>" + row_html + "</div>";
     },
     _property_html: function(property_html, options) {
+      var entry;
       if (options == null) {
         options = {};
       }
       if (options.row === false) {
         if (options.label) {
-          property_html = "<span class='img_property_entry'>" + options.label + " " + property_html + "</span>";
+          entry = "" + options.label + " " + property_html;
+          property_html = "<span class='img_property_entry'>" + entry + "</span>";
         }
         return property_html;
       } else {
-        return this._property_row_html("<span class='img_property_entry'>" + property_html + "</span>", options.label);
+        entry = "<span class='img_property_entry'>" + property_html + "</span>";
+        return this._property_row_html(entry, options.label);
       }
     },
     _property_input_html: function(id, value, options) {
+      var text_field;
       if (options == null) {
         options = {};
       }
-      return this._property_html("<input type='text' id='hallo_img_" + id + "' value='" + value + "'>", options);
+      text_field = "<input type='text' id='hallo_img_" + id + "' value='" + value + "'>";
+      return this._property_html(text_field, options);
     },
     _property_cb_html: function(id, checked, options) {
+      var cb, checked_attr;
       if (options == null) {
         options = {};
       }
-      return this._property_html("<input type='checkbox' id='hallo_img_" + id + "' " + (checked ? 'checked=checked' : '') + "'>", options);
+      checked_attr = checked ? 'checked=checked' : '';
+      cb = "<input type='checkbox' id='hallo_img_" + id + "' " + checked_attr + "'>";
+      return this._property_html(cb, options);
     }
   });
 
@@ -2179,11 +2202,12 @@
         buttonCssClass: null
       },
       populateToolbar: function(toolbar) {
-        var buttonize, buttonset, dialog, dialogId, dialogSubmitCb, isEmptyLink, urlInput, widget,
+        var butTitle, buttonize, buttonset, dialog, dialogId, dialogSubmitCb, isEmptyLink, urlInput, widget,
           _this = this;
         widget = this;
         dialogId = "" + this.options.uuid + "-dialog";
-        dialog = jQuery("<div id=\"" + dialogId + "\">        <form action=\"#\" method=\"post\" class=\"linkForm\">          <input class=\"url\" type=\"text\" name=\"url\"            value=\"" + this.options.defaultUrl + "\" />          <input type=\"submit\" id=\"addlinkButton\" value=\"" + this.options.dialogOpts.buttonTitle + "\" />        </form></div>");
+        butTitle = this.options.dialogOpts.buttonTitle;
+        dialog = jQuery("<div id=\"" + dialogId + "\">        <form action=\"#\" method=\"post\" class=\"linkForm\">          <input class=\"url\" type=\"text\" name=\"url\"            value=\"" + this.options.defaultUrl + "\" />          <input type=\"submit\" id=\"addlinkButton\" value=\"" + butTitle + "\"/>        </form></div>");
         urlInput = jQuery('input[name=url]', dialog).focus(function(e) {
           return this.select();
         });
@@ -2210,7 +2234,7 @@
             }
             document.execCommand("unlink", null, "");
           } else {
-            if (!((new RegExp(/:\/\//)).test(link))) {
+            if (!(/:\/\//.test(link)) && !(/^mailto:/.test(link))) {
               link = 'http://' + link;
             }
             if (widget.lastSelection.startContainer.parentNode.href === void 0) {
@@ -2567,11 +2591,19 @@
         toolbar_height_offset = this.toolbar.outerHeight() + 10;
         if (selection && !selection.collapsed && selection.nativeRange) {
           selectionRect = selection.nativeRange.getBoundingClientRect();
-          top_offset = this.options.positionAbove ? selectionRect.top - toolbar_height_offset : selectionRect.bottom + 10;
+          if (this.options.positionAbove) {
+            top_offset = selectionRect.top - toolbar_height_offset;
+          } else {
+            top_offset = selectionRect.bottom + 10;
+          }
           top = $(window).scrollTop() + top_offset;
           left = $(window).scrollLeft() + selectionRect.left;
         } else {
-          top_offset = this.options.positionAbove ? -10 - toolbar_height_offset : 20;
+          if (this.options.positionAbove) {
+            top_offset = -10 - toolbar_height_offset;
+          } else {
+            top_offset = 20;
+          }
           top = position.top + top_offset;
           left = position.left - this.toolbar.outerWidth() / 2 + 30;
         }
@@ -2870,7 +2902,7 @@
         var buttonEl, classes, id;
         id = "" + this.options.uuid + "-" + this.options.label;
         classes = ['ui-button', 'ui-widget', 'ui-state-default', 'ui-corner-all', 'ui-button-text-only'];
-        buttonEl = jQuery("<button id=\"" + id + "\"        class=\"" + (classes.join(' ')) + "\" title=\"" + this.options.label + "\">         <span class=\"ui-button-text\"> <i class=\"" + this.options.icon + "\"></i> </span>       </button>");
+        buttonEl = jQuery("<button id=\"" + id + "\"       class=\"" + (classes.join(' ')) + "\" title=\"" + this.options.label + "\">       <span class=\"ui-button-text\"><i class=\"" + this.options.icon + "\"></i></span>       </button>");
         if (this.options.cssClass) {
           buttonEl.addClass(this.options.cssClass);
         }

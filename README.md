@@ -18,9 +18,19 @@ Add this to your javascript manifest file:
     //= require hallo
     //= require hallo_rails
 
+Add this to your sass styles:
+
+    @import 'hallo_rails';
+
+You also need to supply styles for the editor icons. 
+Good Icons are included in http://fortawesome.github.com/Font-Awesome/
+
+Just download it and add the styles and font files to your app.
+
+
 ## Requirements
 
-jQuery and jQuery UI. A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
+jQuery and jQuery UI and a and editor icon styles, recommended is the icon font fontsawesome. A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
 
 ## Basic Usage
 

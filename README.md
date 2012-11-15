@@ -2,6 +2,11 @@
 
 Use the Hallo Editor (https://github.com/bergie/hallo) to edit content in place in your Rails app.
 
+## Requirements
+
+jQuery and jQuery UI and styles for the editor icons (recommended is the icon font Font Awesome). A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -27,10 +32,6 @@ Good Icons are included in http://fortawesome.github.com/Font-Awesome/
 
 Just download it and add the styles and font files to your app and you are good to go.
 
-
-## Requirements
-
-jQuery and jQuery UI and styles for the editor icons (recommended is the icon font Font Awesome). A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
 
 ## Basic Usage
 

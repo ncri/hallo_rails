@@ -30,7 +30,7 @@ Just download it and add the styles and font files to your app and you are good 
 
 ## Requirements
 
-jQuery and jQuery UI and a and editor icon styles, recommended is the icon font fontsawesome. A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
+jQuery and jQuery UI and styles for the editor icons (recommended is the icon font Font Awesome). A good way of including jQuery UI in your rails app is using the jquery-ui-rails gem.
 
 ## Basic Usage
 

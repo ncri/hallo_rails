@@ -780,30 +780,41 @@
       editable: null,
       toolbar: null,
       uuid: "",
+      lang: 'en',
       dialogOpts: {
         autoOpen: false,
         width: 600,
         height: 'auto',
-        title: "Edit HTML",
         modal: false,
         resizable: true,
         draggable: true,
         dialogClass: 'htmledit-dialog'
       },
       dialog: null,
-      buttonCssClass: null,
-      button_label: 'Edit HTML'
+      buttonCssClass: null
     },
+    translations: {
+      en: {
+        title: 'Edit HTML',
+        update: 'Update'
+      },
+      de: {
+        title: 'HTML bearbeiten',
+        update: 'Aktualisieren'
+      }
+    },
+    texts: null,
     populateToolbar: function($toolbar) {
       var $buttonHolder, $buttonset, id, widget;
       widget = this;
+      this.texts = this.translations[this.options.lang];
       this.options.toolbar = $toolbar;
       this.options.dialog = $("<div>").attr('id', "" + this.options.uuid + "-htmledit-dialog");
       $buttonset = $("<span>").addClass(widget.widgetName);
       id = "" + this.options.uuid + "-htmledit";
       $buttonHolder = $('<span>');
       $buttonHolder.hallobutton({
-        label: this.options.button_label,
+        label: this.texts.title,
         icon: 'icon-list-alt',
         editable: this.options.editable,
         command: null,
@@ -825,7 +836,8 @@
         return widget._closeDialog();
       });
       $toolbar.append($buttonset);
-      return this.options.dialog.dialog(this.options.dialogOpts);
+      this.options.dialog.dialog(this.options.dialogOpts);
+      return this.options.dialog.dialog("option", "title", this.texts.title);
     },
     _openDialog: function() {
       var $editableEl, html, widget, xposition, yposition,
@@ -845,7 +857,7 @@
       this.options.dialog.html($("<textarea>").addClass('html_source'));
       html = this.options.editable.element.html();
       this.options.dialog.children('.html_source').val(html);
-      this.options.dialog.prepend($('<button>Update</button>'));
+      this.options.dialog.prepend($("<button>" + this.texts.update + "</button>"));
       return this.options.dialog.on('click', 'button', function() {
         widget.options.editable.element.html(widget.options.dialog.children('.html_source').val());
         widget.options.editable.element.trigger('change');
@@ -1731,6 +1743,7 @@
       toolbar: null,
       uuid: "",
       insert_file_dialog_ui_url: null,
+      lang: 'en',
       dialogOpts: {
         autoOpen: false,
         width: 560,
@@ -1741,14 +1754,47 @@
         dialogClass: 'insert-image-dialog'
       },
       dialog: null,
-      buttonCssClass: null,
-      button_label: 'Insert Image'
+      buttonCssClass: null
     },
+    translations: {
+      en: {
+        title_insert: 'Insert Image',
+        title_properties: 'Image Properties',
+        insert: 'Insert',
+        chage_image: 'Change Image:',
+        source: 'URL',
+        width: 'Width',
+        height: 'Height',
+        alt: 'Alt Text',
+        padding: 'Padding',
+        float: 'Float',
+        float_left: 'left',
+        float_right: 'right',
+        float_none: 'No'
+      },
+      de: {
+        title_insert: 'Bild einfügen',
+        title_properties: 'Bild Eigenschaften',
+        insert: 'Einfügen',
+        chage_image: 'Bild ändern:',
+        source: 'URL',
+        width: 'Breite',
+        height: 'Höhe',
+        alt: 'Alt Text',
+        padding: 'Padding',
+        float: 'Float',
+        float_left: 'Links',
+        float_right: 'Rechts',
+        float_none: 'Nein'
+      }
+    },
+    texts: null,
     dialog_image_selection_ui_loaded: false,
     $image: null,
     populateToolbar: function($toolbar) {
       var $buttonHolder, $buttonset, dialog_html, widget;
       widget = this;
+      this.texts = this.translations[this.options.lang];
       this.options.toolbar = $toolbar;
       dialog_html = "<div id='hallo_img_properties'></div>";
       if (this.options.insert_file_dialog_ui_url) {
@@ -1758,7 +1804,7 @@
       $buttonset = $("<span>").addClass(this.widgetName);
       $buttonHolder = $('<span>');
       $buttonHolder.hallobutton({
-        label: this.options.button_label,
+        label: this.texts.title_insert,
         icon: 'icon-picture',
         editable: this.options.editable,
         command: null,
@@ -1814,7 +1860,7 @@
       this.options.editable.keepActivated(true);
       this.options.dialog.dialog("open");
       if (this.$image) {
-        this.options.dialog.dialog("option", "title", 'Image Properties');
+        this.options.dialog.dialog("option", "title", this.texts.title_properties);
         $(document).keyup(function(e) {
           if (e.keyCode === 46 || e.keyCode === 8) {
             $(document).off();
@@ -1830,7 +1876,7 @@
         });
       } else {
         this.options.dialog.children('#hallo_img_properties').hide();
-        this.options.dialog.dialog("option", "title", 'Insert Image');
+        this.options.dialog.dialog("option", "title", this.texts.title_insert);
         if ($('#hallo_img_file_select_title').length > 0) {
           $('#hallo_img_file_select_title').text('');
         }
@@ -1880,7 +1926,7 @@
         url: this.options.insert_file_dialog_ui_url,
         success: function(data, textStatus, jqXHR) {
           var file_select_title;
-          file_select_title = widget.options.dialog.children('#hallo_img_properties').is(':visible') ? 'Change image:' : '';
+          file_select_title = widget.options.dialog.children('#hallo_img_properties').is(':visible') ? widget.texts.change_image : '';
           widget.options.dialog.children('#hallo_img_file_select_ui').html(("<div id='hallo_img_file_select_title'>" + file_select_title + "</div>") + data);
           return widget.dialog_image_selection_ui_loaded = true;
         },
@@ -1895,33 +1941,33 @@
       $img_properties = this.options.dialog.children('#hallo_img_properties');
       if (this.$image) {
         html = this._property_input_html('source', this.$image.attr('src'), {
-          label: 'Source'
-        }) + this._property_input_html('alt', this.$image.attr('alt'), {
-          label: 'Alt text'
+          label: this.texts.source
+        }) + this._property_input_html('alt', this.$image.attr('alt') || '', {
+          label: this.texts.alt
         }) + this._property_row_html(this._property_input_html('width', (this.$image.is('[width]') ? this.$image.attr('width') : ''), {
-          label: 'Width',
+          label: this.texts.width,
           row: false
         }) + this._property_input_html('height', (this.$image.is('[height]') ? this.$image.attr('height') : ''), {
-          label: 'Height',
+          label: this.texts.height,
           row: false
         })) + this._property_input_html('padding', this.$image.css('padding'), {
-          label: 'Padding'
+          label: this.texts.padding
         }) + this._property_row_html(this._property_cb_html('float_left', this.$image.css('float') === 'left', {
-          label: 'left',
+          label: this.texts.float_left,
           row: false
         }) + this._property_cb_html('float_right', this.$image.css('float') === 'right', {
-          label: 'right',
+          label: this.texts.float_right,
           row: false
         }) + this._property_cb_html('unfloat', this.$image.css('float') === 'none', {
-          label: 'no',
+          label: this.texts.float_none,
           row: false
-        }), 'Float');
+        }), this.texts.float);
         $img_properties.html(html);
         $img_properties.show();
       } else {
         if (!this.options.insert_file_dialog_ui_url) {
           $img_properties.html(this._property_input_html('source', '', {
-            label: 'Source'
+            label: this.texts.source
           }));
           $img_properties.show();
         }
@@ -1931,7 +1977,7 @@
           $('#insert_image_btn').remove();
         }
         if ($('#hallo_img_file_select_title').length > 0) {
-          $('#hallo_img_file_select_title').text('Change image:');
+          $('#hallo_img_file_select_title').text(this.texts.chage_image);
         }
         $('#hallo_img_properties #hallo_img_source').keyup(function() {
           return widget.$image.attr('src', this.value);
@@ -1976,7 +2022,7 @@
         });
       } else {
         if (!this.options.insert_file_dialog_ui_url) {
-          $img_properties.after('<button id="insert_image_btn">Insert</button>');
+          $img_properties.after("<button id=\"insert_image_btn\">" + this.texts.insert + "</button>");
           return $('#insert_image_btn').click(function() {
             return widget._insert_image($('#hallo_img_properties #hallo_img_source').val());
           });
@@ -2124,6 +2170,7 @@
           width: 540,
           height: 95,
           title: "Enter Link",
+          buttonTitle: "Insert",
           modal: true,
           resizable: false,
           draggable: false,
@@ -2136,7 +2183,7 @@
           _this = this;
         widget = this;
         dialogId = "" + this.options.uuid + "-dialog";
-        dialog = jQuery("<div id=\"" + dialogId + "\">        <form action=\"#\" method=\"post\" class=\"linkForm\">          <input class=\"url\" type=\"text\" name=\"url\"            value=\"" + this.options.defaultUrl + "\" />          <input type=\"submit\" id=\"addlinkButton\" value=\"Insert\" />        </form></div>");
+        dialog = jQuery("<div id=\"" + dialogId + "\">        <form action=\"#\" method=\"post\" class=\"linkForm\">          <input class=\"url\" type=\"text\" name=\"url\"            value=\"" + this.options.defaultUrl + "\" />          <input type=\"submit\" id=\"addlinkButton\" value=\"" + this.options.dialogOpts.buttonTitle + "\" />        </form></div>");
         urlInput = jQuery('input[name=url]', dialog).focus(function(e) {
           return this.select();
         });

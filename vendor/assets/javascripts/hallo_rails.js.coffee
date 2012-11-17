@@ -43,6 +43,9 @@ init = ->
         $el.addClass('hallo_updating')
       success: ->
         $el.removeClass('hallo_updating')
+      error: (jqXHR, textStatus, errorThrown) ->
+        $el.trigger('hallo:error', [jqXHR.responseText])
+
 
   $('body').on "hallodeactivated", '.form_editable', ->
     $el = $(this)

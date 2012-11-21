@@ -32,7 +32,8 @@
   position: relative;
 }
 
-.editable:hover:before, .hallo_updating:before{
+.editable:hover:before, .hallo_updating:before,
+.form_editable:hover:before{
   font-size: 14px;
   color: orange;
   display: block;
@@ -51,7 +52,8 @@
   @include border-radius;
 }
 
-.editable:hover:before{
+.editable:hover:before,
+.form_editable:hover:before{
   content: "Zum Bearbeiten klicken";   /* "Click to edit" Modify to your language */
 }
 
@@ -59,7 +61,8 @@
   content: "Speichern...";             /* "Saving..." Modify to your language */
 }
 
-.editable.inEditMode:hover:before{     /* this works in chrome, but not FF */
+.editable.inEditMode:hover:before,
+.form_editable.inEditMode:hover:before{     /* this works in chrome, but not FF */
   display: none;
 }
 

@@ -19,11 +19,14 @@ init = ->
     options = $el.data('editable-options') || context.default_options
     $.extend options, { plugins: plugins }
     $el.hallo options
+    $el.data('original-content', $el.html())
     $el.click ->
       $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
 
   $('body').on "hallodeactivated", '.editable', ->
     $el = $(this)
+
+    return if $el.data('original-content') == $el.html()
 
     data = {}
     method_data = {}
@@ -42,6 +45,7 @@ init = ->
       beforeSend: ->
         $el.addClass('hallo_updating')
       success: ->
+        $el.data('original-content', $el.html())
         $el.removeClass('hallo_updating')
       error: (jqXHR, textStatus, errorThrown) ->
         $el.trigger('hallo:error', [jqXHR.responseText])

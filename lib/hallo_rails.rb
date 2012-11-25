@@ -47,7 +47,6 @@ module HalloRails
       content_tag( :div, class: 'editable_wrapper', style: options[:inline] ? 'display:inline-block' : nil) do
         content_tag( options[:tag], options[:content].present? ? options[:content] : options[:blank_text],
                                       class: 'form_editable',
-                                      id: "#{object_name}_#{method.to_s}",
                                       data: { model: object_name,
                                               method: method.to_s,
                                              editable_options: options[:hallo_options],

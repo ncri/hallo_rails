@@ -25,15 +25,20 @@ module HalloRails
 
       options[:content] = sanitize(options[:content]) if options[:sanitize]
 
+      is_editable = !options.has_key?(:editable) || options[:editable]
+      content_tag_data = if is_editable
+        {update_url: options[:update_url],
+        model: object_name,
+        method: method.to_s,
+        editable_options: options[:hallo_options],
+        editable_plugins: options[:plugins] }.merge(options[:params] || {})
+      end
+
       content_tag( :div, class: 'editable_wrapper', style: options[:inline] ? 'display:inline-block' : nil ) do
         content_tag options[:tag], options[:content].present? ? options[:content] : options[:blank_text],
-                      class: "#{'editable' if !options.has_key?(:editable) or options[:editable]}",
+                      class: "#{'editable' if is_editable}",
                       id: "#{object_name}_#{method.to_s}",
-                      data: { update_url: options[:update_url],
-                              model: object_name,
-                              method: method.to_s,
-                              editable_options: options[:hallo_options],
-                              editable_plugins: options[:plugins] }.merge(options[:params] || {})
+                      data: content_tag_data
       end
     end
 

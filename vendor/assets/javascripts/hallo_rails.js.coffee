@@ -12,7 +12,6 @@ default_plugins =
   'hallo-image-insert-edit': {}
 
 init = ->
-  context = this
   attach_editors()
 
   $('body').on "hallodeactivated", '.editable', ->
@@ -50,6 +49,7 @@ init = ->
     $hidden_textarea.html $el.html()
 
 attach_editors = ->
+  context = this
   $('.editable, .form_editable').each ->
     $el = $(this)
     plugins = $el.data('editable-plugins') || context.default_plugins

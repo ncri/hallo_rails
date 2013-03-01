@@ -13,15 +13,7 @@ default_plugins =
 
 init = ->
   context = this
-  $('.editable, .form_editable').each ->
-    $el = $(this)
-    plugins = $el.data('editable-plugins') || context.default_plugins
-    options = $el.data('editable-options') || context.default_options
-    $.extend options, { plugins: plugins }
-    $el.hallo options
-    $el.data('original-content', $el.html())
-    $el.click ->
-      $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
+  attach_editor()
 
   $('body').on "hallodeactivated", '.editable', ->
     $el = $(this)
@@ -57,7 +49,19 @@ init = ->
     $hidden_textarea = $el.next("textarea[name='#{hidden_textarea_name}']")
     $hidden_textarea.html $el.html()
 
-@HalloRails = { default_options, default_plugins, init }
+attach_editors = ->
+  $('.editable, .form_editable').each ->
+    $el = $(this)
+    plugins = $el.data('editable-plugins') || context.default_plugins
+    options = $el.data('editable-options') || context.default_options
+    $.extend options, { plugins: plugins }
+    $el.hallo options
+    $el.data('original-content', $el.html())
+    $el.click ->
+      $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
+
+
+@HalloRails = { default_options, default_plugins, init, attach_editor }
 
 
 

@@ -13,7 +13,7 @@ default_plugins =
 
 init = ->
   context = this
-  attach_editor()
+  attach_editors()
 
   $('body').on "hallodeactivated", '.editable', ->
     $el = $(this)

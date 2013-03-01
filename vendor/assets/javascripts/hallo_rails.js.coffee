@@ -61,7 +61,7 @@ attach_editors = ->
       $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
 
 
-@HalloRails = { default_options, default_plugins, init, attach_editor }
+@HalloRails = { default_options, default_plugins, init, attach_editors }
 
 
 

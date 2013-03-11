@@ -52,8 +52,8 @@ attach_editors = ->
   context = this
   $('.editable, .form_editable').each ->
     $el = $(this)
-    plugins = $el.data('editable-plugins') || context.default_plugins
-    options = $el.data('editable-options') || context.default_options
+    plugins = $el.data('editable-plugins') || default_plugins
+    options = $el.data('editable-options') || default_options
     $.extend options, { plugins: plugins }
     $el.hallo options
     $el.data('original-content', $el.html())

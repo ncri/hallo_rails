@@ -11,6 +11,13 @@ default_plugins =
   hallohtml: {}
   'hallo-image-insert-edit': {}
 
+
+set_options = (options) ->
+  default_options = options
+
+set_plugins = (plugins) ->
+  default_plugins = plugins
+
 init = ->
   attach_editors()
 
@@ -61,7 +68,7 @@ attach_editors = ->
       $(this).focus()     # required for firefox as otherwise when clicking on edit overlay element doesn't focus
 
 
-@HalloRails = { default_options, default_plugins, init, attach_editors }
+@HalloRails = { set_options, set_plugins, init, attach_editors }
 
 
 
